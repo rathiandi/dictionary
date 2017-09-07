@@ -1,0 +1,79 @@
+<!--header-->
+<app-header></app-header>
+
+<!-- main contents-->
+<div class="container-fluid">
+
+  <p><em>You have {{somethings.length}} somethings.</em></p>
+
+  <!--toolbar-->
+  <div class="row">
+    <div class="col">
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#somethingModal" (click) = "somethingForm.reset()"><i class="fa fa-plus" aria-hidden="true"></i> Add a Something</button>
+    </div>
+    <div class="col-md-4">
+      <input type="text" class="form-control" id="searchString" name="searchString" placeholder="search" style="margin-top: .2em" (keyup)="onKey($event)">
+    </div>
+  </div>
+
+  <!--word and description table-->
+  <br>
+  <table class="table table-responsive table-bordered table-hover">
+    <thead>
+      <tr>
+        <th style="width: 30%">Something</th>
+        <th style="width: 60%">Description</th>
+        <th style="width: 12em">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let something of somethings">
+        <td>{{something.name}}</td>
+        <td>{{something.description}}</td>
+        <td>
+          <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fa fa-cogs" aria-hidden="true"></i>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="#" data-toggle="modal" data-target="#somethingModal" (click) = "editSomething(something);" >Edit</a>
+              <a class="dropdown-item" href="#" (click) = "deleteSomething(something)">Delete</a>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>  <!-- end main contents-->
+
+<div class="modal fade" id="somethingModal" tabindex="-1" role="dialog" aria-labelledby="somethingModalLabel" aria-hidden="true" data-backdrop="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="somethingModalLabel"> <span *ngIf="something.id == -1">Add</span> <span *ngIf="something.id != -1">Edit</span> Something</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click) = "reset();">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form #somethingForm="ngForm" (ngSubmit) = "onSubmit()">
+          <div class="form-group">
+            <label for="name">Something</label>
+            <input type="text" class="form-control" id="name" name="name" [(ngModel)] = "something.name" #name="ngModel" required>
+            <div [hidden] = "name.valid || name.pristine" class="form-control-feedback alert alert-danger">Something is required.</div>
+          </div>
+          <div class="form-group">
+            <label for="description">Description</label>
+            <input type="text" class="form-control" id="description" name="description" [(ngModel)] = "something.description" #description="ngModel" required>
+            <div [hidden] = "description.valid || description.pristine" class="form-control-feedback alert alert-danger">Description is required.</div>
+          </div>
+          <div class="pull-right">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" (click) = "reset();">Cancel</button>
+            <button type="submit" class="btn btn-primary" [disabled]="!somethingForm.form.valid">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
